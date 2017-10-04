@@ -1159,14 +1159,14 @@ static void free_service(service *pservice)
 		DEBUG(5, ("free_service: Freeing service %s\n",
 		       pservice->szService));
 
-	string_free(&pservice->szService);
+	smb_string_free(&pservice->szService);
 	SAFE_FREE(pservice->copymap);
 
 	for (i = 0; parm_table[i].label; i++) {
 		if ((parm_table[i].type == P_STRING ||
 		     parm_table[i].type == P_USTRING) &&
 		    parm_table[i].class == P_LOCAL) {
-			string_free((char **)
+			smb_string_free((char **)
 				    (((char *)pservice) +
 				     PTR_DIFF(parm_table[i].ptr, &sDefault)));
 		} else if (parm_table[i].type == P_LIST &&
@@ -1182,8 +1182,8 @@ static void free_service(service *pservice)
 	data = pservice->param_opt;
 	while (data) {
 		DEBUG(5,("[%s = %s]\n", data->key, data->value));
-		string_free(&data->key);
-		string_free(&data->value);
+		smb_string_free(&data->key);
+		smb_string_free(&data->value);
 		pdata = data->next;
 		SAFE_FREE(data);
 		data = pdata;
@@ -1214,8 +1214,8 @@ static int add_a_service(const service *pservice, const char *name)
 			/* They will be added during parsing again */
 			data = ServicePtrs[i]->param_opt;
 			while (data) {
-				string_free(&data->key);
-				string_free(&data->value);
+				smb_string_free(&data->key);
+				smb_string_free(&data->value);
 				pdata = data->next;
 				SAFE_FREE(data);
 				data = pdata;
@@ -1512,7 +1512,7 @@ static void copy_service(service * pserviceDest, service * pserviceSource, int *
 		while (pdata) {
 			/* If we already have same option, override it */
 			if (strcmp(pdata->key, data->key) == 0) {
-				string_free(&pdata->value);
+				smb_string_free(&pdata->value);
 				pdata->value = strdup(data->value);
 				not_added = False;
 				break;
