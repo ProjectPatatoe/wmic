@@ -10,6 +10,7 @@
 # For complete information please visit: http://www.zenoss.com/oss/
 #
 ###########################################################################
+CPP=gcc -E -ffreestanding
 
 all: install
 
