@@ -122,7 +122,7 @@ void on_ctrl_pipe_error(struct winexe_context *c, int func, NTSTATUS status)
 			exit_program(c);
 		}
 		activated = 1;
-		async_open(c->ac_ctrl, "\\" PIPE_NAME, OPENX_MODE_ACCESS_RDWR);
+		async_open(c->ac_ctrl, "\\pipe\\" PIPE_NAME, OPENX_MODE_ACCESS_RDWR);
 	} else if (func == ASYNC_OPEN_RECV) {
 		DEBUG(0,
 		      ("ERROR: Cannot open control pipe - %s\n",
@@ -193,14 +193,14 @@ void on_ctrl_pipe_read(struct winexe_context *c, const char *data, int len)
 		c->ac_io->cb_open = (async_cb_open) on_io_pipe_open;
 		c->ac_io->cb_read = (async_cb_read) on_io_pipe_read;
 		c->ac_io->cb_error = (async_cb_error) on_io_pipe_error;
-		char *fn = talloc_asprintf(c->ac_io, "\\" PIPE_NAME_IO, npipe);
+		char *fn = talloc_asprintf(c->ac_io, "\\pipe\\" PIPE_NAME_IO, npipe);
 		async_open(c->ac_io, fn, OPENX_MODE_ACCESS_RDWR);
 		c->ac_err = talloc_zero(c, struct async_context);
 		c->ac_err->tree = c->tree;
 		c->ac_err->cb_ctx = c;
 		c->ac_err->cb_read = (async_cb_read) on_err_pipe_read;
 		c->ac_err->cb_error = (async_cb_error) on_err_pipe_error;
-		fn = talloc_asprintf(c->ac_err, "\\" PIPE_NAME_ERR, npipe);
+		fn = talloc_asprintf(c->ac_err, "\\pipe\\" PIPE_NAME_ERR, npipe);
 		async_open(c->ac_err, fn, OPENX_MODE_ACCESS_RDWR);
 	} else if ((p = cmd_check(data, CMD_RETURN_CODE, len))) {
 		c->return_code = strtoul(p, 0, 16);
@@ -240,7 +240,7 @@ void on_ctrl_pipe_close(struct winexe_context *c)
 		svc_uninstall(c->args->hostname, c->args->credentials);
 		svc_install(c->args->hostname, c->args->credentials, c->args->interactive | SVC_FORCE_UPLOAD);
 		c->state = STATE_OPENING;
-		async_open(c->ac_ctrl, "\\" PIPE_NAME, OPENX_MODE_ACCESS_RDWR);
+		async_open(c->ac_ctrl, "\\pipe\\" PIPE_NAME, OPENX_MODE_ACCESS_RDWR);
 	}
 }
 
@@ -343,7 +343,7 @@ int main(int argc, char *argv[])
 	c->args->credentials = cmdline_credentials;
 	c->return_code = 99;
 	c->state = STATE_OPENING;
-	async_open(c->ac_ctrl, "\\" PIPE_NAME, OPENX_MODE_ACCESS_RDWR);
+	async_open(c->ac_ctrl, "\\pipe\\" PIPE_NAME, OPENX_MODE_ACCESS_RDWR);
 
 	event_loop_wait(cli->tree->session->transport->socket->event.ctx);
 	return 0;

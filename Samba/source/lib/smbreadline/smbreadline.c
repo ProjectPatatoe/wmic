@@ -129,7 +129,7 @@ char *smb_readline(const char *prompt, void (*callback)(void),
 
 #if HAVE_DECL_RL_EVENT_HOOK
 		if (callback)
-			rl_event_hook = (void *)callback;
+			rl_event_hook = (Function *)callback;
 #endif
 		ret = readline(prompt);
 		if (ret && *ret)

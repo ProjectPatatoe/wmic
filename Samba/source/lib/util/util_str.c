@@ -287,7 +287,7 @@ static BOOL string_init(char **dest,const char *src)
 /**
  Free a string value.
 **/
-_PUBLIC_ void smb_string_free(char **s)
+_PUBLIC_ void string_free(char **s)
 {
 	if (s) SAFE_FREE(*s);
 }
@@ -298,7 +298,7 @@ _PUBLIC_ void smb_string_free(char **s)
 **/
 _PUBLIC_ BOOL string_set(char **dest, const char *src)
 {
-	smb_string_free(dest);
+	string_free(dest);
 	return string_init(dest,src);
 }
 
